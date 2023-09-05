@@ -19,7 +19,7 @@ if ( !function_exists( 'add_action' ) ) {
 	exit;
 }
 
-define( 'DS8CLIENTES_VERSION', '3.9' );
+define( 'DS8CLIENTES_VERSION', '1' );
 define( 'DS8CLIENTES_MINIMUM_WP_VERSION', '5.0' );
 define( 'DS8_AUTHOR_BOX_ASSETS', plugins_url('/assets/', __FILE__));
 define( 'DS8CLIENTES_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );

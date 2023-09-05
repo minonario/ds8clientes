@@ -55,7 +55,7 @@ jQuery( function ( $ ) {
     if ($(this).is(':checked')) {
        order = 'fecha';
     }else{
-       order = 'display_name';
+       order = 'display-name';
     };
     
     $.ajax({

@@ -16,8 +16,6 @@ class DS8Clientes {
             $this->load_dependencies();
             $this->define_admin_hooks();
             
-            add_action('widgets_init', array($this, 'ds8_columnist_register_widget'));
-            
             add_action('admin_enqueue_scripts', array($this, 'ds8_selectively_enqueue_admin_script'), 10 );
             add_action('wp_enqueue_scripts', array($this, 'ds8_clientes_javascript'), 10);
             add_shortcode( 'ds8cliente', array($this, 'ds8cliente_shortcode_fn') );
@@ -153,12 +151,12 @@ class DS8Clientes {
                               'number' => $perpage, 
                               'offset' => $offset );
             
-            if ($orderc == 'fecha'){
-              $params['orderby'] ='post_date_gmt';
-              $params['order'] = 'DESC';
-            }else{
+            if ($orderc == 'display-name'){
               $params['orderby'] = 'display_name';
               $params['order'] = 'ASC';
+            }else{
+              $params['orderby'] ='post_date_gmt';
+              $params['order'] = 'DESC';
             }
             //$users = new WP_User_Query($params);
             $result = self::_prefix_get_users_by_post_date_v2($perpage, $params['orderby'], $params['order']);
@@ -218,10 +216,7 @@ class DS8Clientes {
         }
         
         private function load_dependencies() {
-            
-            require_once DS8CLIENTES_PLUGIN_DIR . 'includes/class-ds8-columnist-helper.php';
-            require_once DS8CLIENTES_PLUGIN_DIR . 'includes/class-ds8-cliente-widget.php';
-          
+                      
             if (is_admin()) {
                 require_once DS8CLIENTES_PLUGIN_DIR . 'includes/class-ds8-profile-user-image.php';
             }
@@ -234,6 +229,9 @@ class DS8Clientes {
 		self::$initiated = true;
                 add_rewrite_rule( "providencia/([a-z0-9-]+)[/]?$", 'index.php?providencia=$matches[1]', 'top' );
                 add_rewrite_rule( "prospecto/([a-z0-9-]+)[/]?$", 'index.php?prospecto=$matches[1]', 'top' );
+                add_rewrite_tag('%orderc%', '([^&]+)');
+                add_rewrite_rule( "([a-z0-9-]+)/page/?([0-9]{1,})/([a-z0-9-]+)[/]?$", 'index.php?&pagename=$matches[1]&paged=$matches[2]&orderc=$matches[3]', 'top' );
+                add_rewrite_rule( "([a-z0-9-]+)/([a-z0-9-]+)[/]?$", 'index.php?&pagename=$matches[1]&orderc=$matches[2]', 'top' );
                 add_action('template_redirect', array('DS8Clientes', 'ds8_clientes_redirect') );
         }
         
@@ -250,10 +248,6 @@ class DS8Clientes {
           */
         private function define_admin_hooks() {
             add_filter('get_avatar', array($this, 'replace_gravatar_image'), 10, 6);
-        }
-        
-        public function ds8_columnist_register_widget() {
-          register_widget('DS8_Columnist_Widget');
         }
 
         /**
@@ -433,7 +427,7 @@ class DS8Clientes {
                       AND {$wpdb->posts}.post_date_gmt = conv.latest
                     WHERE b.meta_key = 'agl_capabilities' and b.meta_value like '%contributor%'
                     GROUP BY ID
-                    ORDER BY ${orderby} ${order}
+                    ORDER BY ${orderby} ${order}, ID ASC
                     LIMIT ${offset}, ${perpage} ",
                     $post_type
                 )
@@ -522,15 +516,15 @@ class DS8Clientes {
           
           extract( shortcode_atts( array(
               'type' => 'cliente',
-              'perpage' => 4
+              'perpage' => 12
           ), $atts ) );
           
-          if (get_query_var('orderc') == 'fecha'){
-              $params['orderby'] ='post_date_gmt';
-              $params['order'] = 'DESC';
-          }else{
+          if (get_query_var('orderc') == 'display-name'){
             $params['orderby'] = 'display_name';
             $params['order'] = 'ASC';
+          }else{
+            $params['orderby'] ='post_date_gmt';
+            $params['order'] = 'DESC';
           }
 
           $result = self::_prefix_get_users_by_post_date_v2($perpage, $params['orderby'], $params['order']);
@@ -578,7 +572,7 @@ class DS8Clientes {
             //wp_register_script( 'tabs.js', plugin_dir_url( __FILE__ ) . 'assets/js/bootstrap.js', array('jquery'), DS8CLIENTES_VERSION, true );
             //wp_enqueue_script( 'tabs.js' );
             //wp_enqueue_script( 'popper', 'https://unpkg.com/@popperjs/core@2', array('jquery'), DS8CLIENTES_VERSION, true );
-            wp_enqueue_script( 'popper', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js', array('jquery'), DS8CLIENTES_VERSION, true );
+            //wp_enqueue_script( 'popper', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js', array('jquery'), DS8CLIENTES_VERSION, true );
             
             wp_register_script( 'clientes.js', plugin_dir_url( __FILE__ ) . 'assets/js/clientes.js', array('bootstrap-js'), DS8CLIENTES_VERSION, true );
             $localize_script_args = array(
