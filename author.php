@@ -106,7 +106,7 @@ $curauth = (isset($_GET['author_name'])) ? get_user_by('slug', $author_name) : g
     <?php 
     
       $pages = paginate_links( array(
-          'mid_size'  => 2,
+          'mid_size'  => 6,
           'prev_text' => __( '«', 'textdomain' ),
           'next_text' => "»",
           'type' => 'array'
