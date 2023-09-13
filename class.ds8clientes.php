@@ -572,7 +572,7 @@ class DS8Clientes {
             //wp_register_script( 'tabs.js', plugin_dir_url( __FILE__ ) . 'assets/js/bootstrap.js', array('jquery'), DS8CLIENTES_VERSION, true );
             //wp_enqueue_script( 'tabs.js' );
             //wp_enqueue_script( 'popper', 'https://unpkg.com/@popperjs/core@2', array('jquery'), DS8CLIENTES_VERSION, true );
-            //wp_enqueue_script( 'popper', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js', array('jquery'), DS8CLIENTES_VERSION, true );
+            wp_enqueue_script( 'popper', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js', array('jquery'), DS8CLIENTES_VERSION, true );
             
             wp_register_script( 'clientes.js', plugin_dir_url( __FILE__ ) . 'assets/js/clientes.js', array('bootstrap-js'), DS8CLIENTES_VERSION, true );
             $localize_script_args = array(
